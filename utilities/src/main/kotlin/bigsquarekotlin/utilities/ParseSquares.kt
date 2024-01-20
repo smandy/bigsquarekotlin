@@ -2,8 +2,6 @@ package bigsquarekotlin.utilities
 
 import java.io.InputStream
 
-object Loader
-
 // NB - not generating equals or hashcode - caveat emptor!
 class SquareArray(val size : Int, private val ary : BooleanArray) {
     init {
@@ -42,12 +40,11 @@ fun parseSquare(inputStream : InputStream) : SquareArray {
 
 
 fun main() {
-    val s = Loader::javaClass.javaClass.classLoader
-    val instream = s.getResourceAsStream("dat1.txt") ?: error("Can't open file")
+    val s = SquareArray::javaClass.javaClass.classLoader
+    val fn = "dat1.txt"
+    val instream = s.getResourceAsStream(fn) ?: error("Can't open file from classloader $fn")
     val myAry = parseSquare(instream)
-
     println(myAry)
-
     myAry[3,4] = false
     val bla = myAry[4,5]
 }
