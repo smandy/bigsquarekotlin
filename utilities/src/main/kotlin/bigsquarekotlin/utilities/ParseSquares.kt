@@ -42,8 +42,8 @@ fun parseSquare(inputStream : InputStream) : SquareArray {
 fun main() {
     val s = SquareArray::javaClass.javaClass.classLoader
     val fn = "dat1.txt"
-    val instream = s.getResourceAsStream(fn) ?: error("Can't open file from classloader $fn")
-    val myAry = parseSquare(instream)
+    val inputStream = s.getResourceAsStream(fn) ?: error("Can't open file from classloader $fn")
+    val myAry = parseSquare(inputStream)
     println(myAry)
     myAry[3,4] = false
     val bla = myAry[4,5]
