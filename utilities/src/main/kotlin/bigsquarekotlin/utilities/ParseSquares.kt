@@ -9,7 +9,7 @@ class SquareArray(val size : Int, private val ary : BooleanArray) {
     }
 
     private fun indexOf( y : Int, x : Int) = (y * size + x).also { idx ->
-        require(idx in 0 until ary.size) { "Out of bounds!" }
+        require(idx in 0 until ary.size) { "Out of bounds array access! idx=$idx ary.size=${ary.size}" }
     }
 
     operator fun set(y: Int, x: Int, value: Boolean) {
@@ -31,10 +31,10 @@ fun parseSquare(inputStream : InputStream) : SquareArray {
         .map { it.trimEnd( '|')}
         .let { lines -> // Sanity checks
             val sizes = lines.map { it.length }.toSet()
-            require(sizes.size == 1) { "Uneven linesizes $sizes"}
+            require(sizes.size == 1) { "Uneven linesizes - have these sizes$sizes"}
             require(sizes.first() == lines.size )
             SquareArray( sizes.first(), lines.flatMap { line ->
-                 line.map { c -> lut[c] ?: error("Can't parse char $c") } }.toBooleanArray() )
+                 line.map { c -> lut[c] ?: error("Can't parse char $c in line=$line") } }.toBooleanArray() )
         }
 }
 
@@ -46,5 +46,4 @@ fun main() {
     val myAry = parseSquare(inputStream)
     println(myAry)
     myAry[3,4] = false
-    val bla = myAry[4,5]
 }
