@@ -45,5 +45,10 @@ fun main() {
     val inputStream = s.getResourceAsStream(fn) ?: error("Can't open file from classloader $fn")
     val myAry = parseSquare(inputStream)
     println(myAry)
-    myAry[3,4] = false
+    myAry[3, 4] = false
+
+    val tmp = IntArray(10) { 0 }
+    println(tmp.contentToString())
+    
 }
+

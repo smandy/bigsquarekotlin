@@ -6,6 +6,7 @@
 
 plugins {
     id("bigsquarekotlin.kotlin-application-conventions")
+    id("distribution")
 }
 
 dependencies {
