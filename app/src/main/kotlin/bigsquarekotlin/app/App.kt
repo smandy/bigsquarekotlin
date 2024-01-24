@@ -3,12 +3,11 @@
  */
 package bigsquarekotlin.app
 
-import bigsquarekotlin.utilities.StringUtils
-
-import org.apache.commons.text.WordUtils
+import bigsquarekotlin.utilities.parseSquare
+import bigsquarekotlin.utilities.streamForFile
 
 fun main() {
-    val tokens = StringUtils.split(MessageUtils.getMessage())
-    val result = StringUtils.join(tokens)
-    println(WordUtils.capitalize(result))
+    val ary = parseSquare(streamForFile("dat1.txt"))
+    val exteriorArray = IntArray( ary.size * ary.size) { 0 }
+
 }
