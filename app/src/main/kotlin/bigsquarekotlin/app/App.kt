@@ -10,4 +10,6 @@ fun main() {
     val ary = parseSquare(streamForFile("dat1.txt"))
     val exteriorArray = IntArray( ary.size * ary.size) { 0 }
 
+
+
 }
