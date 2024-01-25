@@ -2,6 +2,10 @@ package bigsquarekotlin.utilities
 
 import java.io.InputStream
 
+data class Coord( val y : Int, val x : Int)
+data class MaxData( val value : Int, val items : MutableList<Coord>)
+data class MaxDatum( val value : Int, val coord : Coord)
+
 // NB - not generating equals or hashcode - caveat emptor!
 class SquareBooleanArray(val size: Int, private val ary: BooleanArray) {
     init {
@@ -23,27 +27,47 @@ class SquareBooleanArray(val size: Int, private val ary: BooleanArray) {
     }
 }
 
+
+
 class SquareIntArray(val size: Int, private val ary: IntArray) {
-    init {
-        require(size * size == ary.size) { "Arguments inconsistent size=${size} ary.size=${ary.size}" }
+    fun dump(toHighlight : MaxDatum?) {
+        val target = if (toHighlight == null) this else {
+            SquareIntArray(size, ary.clone()).also {
+                for ( yoffset in (toHighlight.coord.y - toHighlight.value + 1)..toHighlight.coord.y) {
+                    for ( xoffset in (toHighlight.coord.x - toHighlight.value + 1)..toHighlight.coord.x) {
+                        it[yoffset, xoffset] = -1
+                    }
+                }
+            }
+        }
+        target.dumpInternal()
     }
 
-    fun dump() {
+    private fun dumpInternal() {
         for (y in 0 until size) {
             print('|')
             for (x in 0 until size) {
-                val c = this[y,x].let {
-                    return@let if (it == 0)
-                        ' '
-                    else
-                        ('0'.code + it).toChar()
+                this[y,x].let {
+                    when(it) {
+                        -1 -> 'X'
+                        0 -> ' '
+                        else -> ('0'.code + this[y,x]).toChar()
+                    }
+                }.also { char ->
+                    print(char)
+                    print(' ')
                 }
-                print( c )
             }
             print( '|')
             println()
         }
     }
+
+
+    init {
+        require(size * size == ary.size) { "Arguments inconsistent size=${size} ary.size=${ary.size}" }
+    }
+
 
     private fun indexOf(y: Int, x: Int) = (y * size + x).also { idx ->
         require(idx in ary.indices) { "Out of bounds array access! idx=$idx ary.size=${ary.size}" }

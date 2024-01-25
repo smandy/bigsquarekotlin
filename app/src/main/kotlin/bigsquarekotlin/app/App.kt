@@ -3,12 +3,8 @@
  */
 package bigsquarekotlin.app
 
-import bigsquarekotlin.utilities.SquareIntArray
-import bigsquarekotlin.utilities.parseSquare
-import bigsquarekotlin.utilities.streamForFile
+import bigsquarekotlin.utilities.*
 
-data class Coord( val y : Int, val x : Int)
-data class MaxData( val value : Int, val items : MutableList<Coord>)
 
 fun main() {
     val ary = parseSquare(streamForFile("dat1.txt"))
@@ -31,16 +27,24 @@ fun main() {
                 0
             }
             exteriorArray[y, x] = newValue
-            if (maxData == null) {
-                maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
-            } else {
+            maxData?.value?.let { oldValue ->
                 when {
-                    newValue == maxData!!.value -> maxData.items.add(Coord(y, x))
-                    newValue > maxData!!.value -> maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
-                    else -> throw IllegalStateException("Should not happen")
+                    newValue == oldValue -> maxData!!.items.add(Coord(y, x))
+                    newValue > oldValue -> maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
+                    else -> require(newValue < oldValue) { "Invariant violated! newValue=$newValue maxData=$maxData" }
                 }
+                Unit
+            } ?: run {
+                maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
             }
         }
     }
-    exteriorArray.dump()
+
+    maxData!!.also { (value, items) ->
+        for ( data in items) {
+            exteriorArray.dump(MaxDatum(value, data))
+            println()
+            println()
+        }
+    }
 }
