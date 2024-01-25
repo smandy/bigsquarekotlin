@@ -3,13 +3,42 @@
  */
 package bigsquarekotlin.app
 
+import bigsquarekotlin.utilities.SquareIntArray
 import bigsquarekotlin.utilities.parseSquare
 import bigsquarekotlin.utilities.streamForFile
+import kotlin.math.min
+
+data class MaxData( val y : Int, val x : Int, val value : Int)
 
 fun main() {
     val ary = parseSquare(streamForFile("dat1.txt"))
-    val exteriorArray = IntArray( ary.size * ary.size) { 0 }
+    val exteriorArray = SquareIntArray(ary.size, IntArray( ary.size * ary.size) { 0 })
 
+    var maxData : MaxData? = null
 
+    for (y in 0 until ary.size) {
+        for (x in 0 until ary.size) {
+            if (ary[y, x]) {
+                if (y==0 || x==0) {
+                    exteriorArray[y,x] = 1
+                } else {
+                    val minVal = minOf(exteriorArray[y-1,x], exteriorArray[y,x-1],
+                    exteriorArray[y-1, x-1])
+                    if (minVal>0) {
+                        exteriorArray[y,x] = minVal + 1
+                    } else {
+                        exteriorArray[y,x] = 1
+                    }
+                }
+            }
 
+            if (maxData == null || exteriorArray[y,x] > maxData.value) {
+                maxData = MaxData(y, x, exteriorArray[y,x])
+            }
+        }
+    }
+
+    println("MaxData = $maxData")
+
+    exteriorArray.dump()
 }

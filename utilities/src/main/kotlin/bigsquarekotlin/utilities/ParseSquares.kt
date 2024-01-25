@@ -28,6 +28,23 @@ class SquareIntArray(val size: Int, private val ary: IntArray) {
         require(size * size == ary.size) { "Arguments inconsistent size=${size} ary.size=${ary.size}" }
     }
 
+    fun dump() {
+        for (y in 0 until size) {
+            print('|')
+            for (x in 0 until size) {
+                val c = this[y,x].let {
+                    return@let if (it == 0)
+                        ' '
+                    else
+                        ('0'.code + it).toChar()
+                }
+                print( c )
+            }
+            print( '|')
+            println()
+        }
+    }
+
     private fun indexOf(y: Int, x: Int) = (y * size + x).also { idx ->
         require(idx in ary.indices) { "Out of bounds array access! idx=$idx ary.size=${ary.size}" }
     }
@@ -67,7 +84,6 @@ fun streamForFile(fn : String) : InputStream{
 }
 
 fun main() {
-
     val fn = "dat1.txt"
     val inputStream = streamForFile(fn)
     val myAry = parseSquare(inputStream)
