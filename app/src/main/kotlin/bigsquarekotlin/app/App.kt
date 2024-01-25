@@ -6,9 +6,9 @@ package bigsquarekotlin.app
 import bigsquarekotlin.utilities.SquareIntArray
 import bigsquarekotlin.utilities.parseSquare
 import bigsquarekotlin.utilities.streamForFile
-import kotlin.math.min
 
-data class MaxData( val y : Int, val x : Int, val value : Int)
+data class Coord( val y : Int, val x : Int)
+data class MaxData( val value : Int, val items : MutableList<Coord>)
 
 fun main() {
     val ary = parseSquare(streamForFile("dat1.txt"))
@@ -18,27 +18,29 @@ fun main() {
 
     for (y in 0 until ary.size) {
         for (x in 0 until ary.size) {
-            if (ary[y, x]) {
-                if (y==0 || x==0) {
-                    exteriorArray[y,x] = 1
+            val newValue = if (ary[y, x]) {
+                if (y == 0 || x == 0) {
+                    1
                 } else {
-                    val minVal = minOf(exteriorArray[y-1,x], exteriorArray[y,x-1],
-                    exteriorArray[y-1, x-1])
-                    if (minVal>0) {
-                        exteriorArray[y,x] = minVal + 1
-                    } else {
-                        exteriorArray[y,x] = 1
-                    }
+                    minOf(
+                        exteriorArray[y - 1, x], exteriorArray[y, x - 1],
+                        exteriorArray[y - 1, x - 1]
+                    ) + 1
                 }
+            } else {
+                0
             }
-
-            if (maxData == null || exteriorArray[y,x] > maxData.value) {
-                maxData = MaxData(y, x, exteriorArray[y,x])
+            exteriorArray[y, x] = newValue
+            if (maxData == null) {
+                maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
+            } else {
+                when {
+                    newValue == maxData!!.value -> maxData.items.add(Coord(y, x))
+                    newValue > maxData!!.value -> maxData = MaxData(newValue, mutableListOf(Coord(y, x)))
+                    else -> throw IllegalStateException("Should not happen")
+                }
             }
         }
     }
-
-    println("MaxData = $maxData")
-
     exteriorArray.dump()
 }
